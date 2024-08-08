@@ -1,0 +1,42 @@
+diff -up gromox-2.30/lib/mapi/oxcmail.cpp.omv~ gromox-2.30/lib/mapi/oxcmail.cpp
+--- gromox-2.30/lib/mapi/oxcmail.cpp.omv~	2024-08-08 18:15:26.777024496 +0200
++++ gromox-2.30/lib/mapi/oxcmail.cpp	2024-08-08 18:31:43.910190548 +0200
+@@ -3798,14 +3798,34 @@ static BOOL oxcmail_export_dsn(const MES
+ 		if (num != nullptr) {
+ 			if (*num == MAPI_DIAG_NO_DIAGNOSTIC) {
+ 				num = rcpt.get<uint32_t>(PR_NDR_REASON_CODE);
+-				if (num != nullptr && !dsn.append_field(pdsn_fields,
++				if (num != nullptr) {
++					const char *status;
++					if(*num > 6)
++						status = "5.4.0";
++					else
++						status = status_strings1[*num];
++					if(!dsn.append_field(pdsn_fields,
++								"Status", status))
++						return FALSE;
++				}
++/*				if (num != nullptr && !dsn.append_field(pdsn_fields,
+ 				    "Status", *num > 6 ? "5.4.0" : status_strings1[*num]))
+-					return FALSE;
++					return FALSE; */
+ 			} else {
+ 				num = rcpt.get<uint32_t>(PR_NDR_REASON_CODE);
+-				if (num != nullptr && !dsn.append_field(pdsn_fields,
++				if (num != nullptr) {
++					const char *status;
++					if(*num > 48)
++						status = "5.0.0";
++					else
++						status = status_strings2[*num];
++					if(!dsn.append_field(pdsn_fields,
++								"Status", status))
++						return FALSE;
++				}
++/*				if (num != nullptr && !dsn.append_field(pdsn_fields,
+ 				    "Status", *num > 48 ? "5.0.0" : status_strings2[*num]))
+-					return FALSE;
++					return FALSE; */
+ 			}
+ 		}
+ 		str = rcpt.get<char>(PR_DSN_REMOTE_MTA);
