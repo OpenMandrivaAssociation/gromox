@@ -25,6 +25,7 @@ BuildRequires: pkgconfig(libzstd)
 BuildRequires: pkgconfig(sqlite3)
 BuildRequires: pkgconfig(tinyxml2)
 BuildRequires: pkgconfig(vmime)
+BuildRequires: pkgconfig(mariadb)
 BuildRequires: php-devel
 BuildRequires: slibtool
 # Some optional deps we currently don't want
