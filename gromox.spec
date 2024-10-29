@@ -1,9 +1,9 @@
 # For the php module
 %global _disable_ld_no_undefined 1
-%global build_ldflags %{build_ldflags} -Wl,--allow-shlib-undefined
+%global build_ldflags %{build_ldflags} -Wl,--allow-shlib-undefined -fuse-ld=bfd
 
 Name: gromox
-Version: 2.30
+Version: 2.35
 Release: 1
 Source0: https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary: Central groupware server component of grommunio
@@ -40,6 +40,7 @@ BuildRequires: slibtool
 
 %patchlist
 gromox-2.30-workaround-clang-bug-97005.patch
+gromox-2.35-compile.patch
 
 %description
 Gromox is the central groupware server component of grommunio. It is capable of
@@ -78,6 +79,7 @@ slibtoolize --force
 %{_bindir}/gromox-ical2mt
 %{_bindir}/gromox-kdb2mt
 %{_bindir}/gromox-mailq
+%{_bindir}/gromox-mbck
 %{_bindir}/gromox-mbop
 %{_bindir}/gromox-mbox2mt
 %{_bindir}/gromox-mkmidb
@@ -98,6 +100,8 @@ slibtoolize --force
 %{_unitdir}/gromox-zcore.service
 %{_sysusersdir}/sysusers-gromox.conf
 %{_tmpfilesdir}/tmpfiles-gromox.conf
+%{_libdir}/libgromox_auth.so*
+%{_libdir}/libgromox_authz.so*
 %{_libdir}/libgromox_common.so*
 %{_libdir}/libgromox_dbop.so*
 %{_libdir}/libgromox_email.so*
@@ -115,17 +119,13 @@ slibtoolize --force
 %{_libdir}/libgxp_exchange_emsmdb.so*
 %{_libdir}/libgxp_exchange_nsp.so*
 %{_libdir}/libgxp_exchange_rfr.so*
-%{_libdir}/libgxs_authmgr.so*
-%{_libdir}/libgxs_dnsbl_filter.so*
 %{_libdir}/libgxs_event_proxy.so*
 %{_libdir}/libgxs_event_stub.so*
 %{_libdir}/libgxs_exmdb_provider.so*
-%{_libdir}/libgxs_ldap_adaptor.so*
 %{_libdir}/libgxs_midb_agent.so*
 %{_libdir}/libgxs_mysql_adaptor.so*
 %{_libdir}/libgxs_ruleproc.so*
 %{_libdir}/libgxs_timer_agent.so*
-%{_libdir}/libgxs_user_filter.so*
 %{_libdir}/php/extensions/mapi.so
 %{_libdir}/security/pam_gromox.so
 %{_libexecdir}/gromox
@@ -167,6 +167,7 @@ slibtoolize --force
 %{_mandir}/man8/gromox-compress.8*
 %{_mandir}/man8/gromox-dbop.8*
 %{_mandir}/man8/gromox-dscli.8*
+%{_mandir}/man8/gromox-e2ghelper.8*
 %{_mandir}/man8/gromox-eml2mbox.8*
 %{_mandir}/man8/gromox-eml2mt.8*
 %{_mandir}/man8/gromox-exm2eml.8*

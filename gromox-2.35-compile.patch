@@ -1,0 +1,15 @@
+diff -up gromox-2.35/Makefile.am.omv~ gromox-2.35/Makefile.am
+--- gromox-2.35/Makefile.am.omv~	2024-10-29 18:31:32.598513500 +0100
++++ gromox-2.35/Makefile.am	2024-10-29 18:32:44.789168858 +0100
+@@ -12,9 +12,9 @@ lib_LTLIBRARIES = libgromox_common.la li
+ noinst_LTLIBRARIES = libphp_mapi.la
+ pkglibexec_PROGRAMS = cgkrepair delivery delivery-queue event gromox-snapshot http imap midb pop3 timer zcore tools/eidprint tools/textmapquery
+ pkglib_LTLIBRARIES = libmapi4zf.la
+-if WITH_GNU_LD
++#if WITH_GNU_LD
+ platform_LDVSC = -Wl,--version-script=
+-endif
++#endif
+ if WITH_SUN_LD
+ platform_LDVSC = -Wl,-M,
+ endif
