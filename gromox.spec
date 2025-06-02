@@ -4,7 +4,7 @@
 
 Name: gromox
 Version: 2.35
-Release: 3
+Release: 4
 Source0: https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary: Central groupware server component of grommunio
 URL: https://github.com/grommunio/gromox
