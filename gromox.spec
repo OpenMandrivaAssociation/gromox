@@ -18,6 +18,7 @@ BuildRequires:	pkgconfig(jsoncpp)
 BuildRequires:	pkgconfig(sqlite3)
 BuildRequires:	pkgconfig(tinyxml2)
 BuildRequires:	pkgconfig(libzstd)
+BuildRequires:	pkgconfig(libcurl)
 BuildRequires:	php-devel
 
 %description
