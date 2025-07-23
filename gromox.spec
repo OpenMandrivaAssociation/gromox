@@ -20,6 +20,17 @@ BuildRequires:	pkgconfig(tinyxml2)
 BuildRequires:	pkgconfig(libzstd)
 BuildRequires:	pkgconfig(libcurl)
 BuildRequires:	pkgconfig(ldap)
+BuildRequires:	pkgconfig(mariadb)
+BuildRequires:	pkgconfig(libxxhash)
+%if 0
+# Extra dependencies for better M$ Exchange emulation support
+# ESE = Extensible Storage Engine = Database format for Windows Search, Windows Mail, Exchange, Active Directory
+# OLECF = OLE 2 Compound File (some M$ Office files, thumbs.db)
+# PFF = Personal Folder File = Outbreak email/contacts/... format https://github.com/libyal/libpff
+BuildRequires:	pkgconfig(libesedb)
+BuildRequires:	pkgconfig(libolecf)
+BuildRequires:	pkgconfig(libpff)
+%endif
 BuildRequires:	php-devel
 
 %description
