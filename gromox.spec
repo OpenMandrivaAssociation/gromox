@@ -9,7 +9,7 @@ Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
 License:	AGPL-3.0
 Group:		Servers
-BuildRequires:	autoconf automake slibtool
+BuildRequires:	autoconf automake slibtool make
 BuildRequires:	php-devel
 BuildRequires:	pkgconfig(wmime)
 BuildRequires:	pkgconfig(openssl)
