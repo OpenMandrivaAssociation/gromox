@@ -2,7 +2,7 @@
 %define _disable_ld_no_undefined 1
 
 Name:		gromox
-Version:	3.4
+Version:	3.5
 Release:	1
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
@@ -183,7 +183,6 @@ mkdir -p %{buildroot}/srv/mail/gromox
 %{_libdir}/gromox/libgromox_authz.so*
 %{_libdir}/gromox/libgromox_common.so*
 %{_libdir}/gromox/libgromox_dbop.so*
-%{_libdir}/gromox/libgromox_epoll.so*
 %{_libdir}/gromox/libgromox_exrpc.so*
 %{_libdir}/gromox/libgromox_mh_emsmdb.so*
 %{_libdir}/gromox/libgromox_mh_nsp.so*
