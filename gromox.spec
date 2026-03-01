@@ -3,7 +3,7 @@
 
 Name:		gromox
 Version:	3.5
-Release:	1
+Release:	2
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
@@ -39,6 +39,11 @@ Requires:	%{name}-pop3 = %{EVRD}
 Requires:	%{name}-tools = %{EVRD}
 Requires:	php-gromox = %{EVRD}
 Requires:	pam-gromox = %{EVRD}
+# M$ compatible mail storage uses windows-1252
+Requires:	locales-extra-charsets
+
+%patchlist
+gromox-3.5-servicedeps.patch
 
 %description
 Gromox is the central groupware server component of grommunio.

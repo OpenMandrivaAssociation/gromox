@@ -1,0 +1,234 @@
+diff -up gromox-3.5/system/gromox-cleaner.service.omv~ gromox-3.5/system/gromox-cleaner.service
+--- gromox-3.5/system/gromox-cleaner.service.omv~	2026-03-01 02:57:24.322849633 +0100
++++ gromox-3.5/system/gromox-cleaner.service	2026-03-01 03:01:50.776612029 +0100
+@@ -17,3 +17,7 @@ ProtectKernelModules=yes
+ ProtectKernelTunables=yes
+ SystemCallFilter=@default @file-system @basic-io @system-service
+ Type=oneshot
++User=gromox
++Group=gromox
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
+diff -up gromox-3.5/system/gromox-delivery-queue.service.omv~ gromox-3.5/system/gromox-delivery-queue.service
+--- gromox-3.5/system/gromox-delivery-queue.service.omv~	2026-03-01 02:59:32.971193280 +0100
++++ gromox-3.5/system/gromox-delivery-queue.service	2026-03-01 02:59:43.418963609 +0100
+@@ -8,6 +8,11 @@ Type=simple
+ ExecStart=/usr/libexec/gromox/delivery-queue
+ ExecReload=/bin/kill -HUP $MAINPID
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
+diff -up gromox-3.5/system/gromox-delivery.service.omv~ gromox-3.5/system/gromox-delivery.service
+--- gromox-3.5/system/gromox-delivery.service.omv~	2026-03-01 02:50:42.237968358 +0100
++++ gromox-3.5/system/gromox-delivery.service	2026-03-01 03:05:37.864608599 +0100
+@@ -1,14 +1,22 @@
+ [Unit]
+ Description=Gromox mail spooler
+ Documentation=man:delivery(8gx)
+-Requires=gromox-delivery-queue.service
+-After=mariadb.service mysql.service
++Requires=gromox-delivery-queue.service gromox-http.service
++After=mariadb.service mysql.service gromox-delivery-queue.service gromox-http.service
+ 
+ [Service]
+ Type=simple
+ ExecStart=/usr/libexec/gromox/delivery
+ ExecReload=/bin/kill -HUP $MAINPID
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++# Grant permission to bind to port 24 without being root
++CapabilityBoundingSet=CAP_NET_BIND_SERVICE
++AmbientCapabilities=CAP_NET_BIND_SERVICE
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
+diff -up gromox-3.5/system/gromox-event.service.omv~ gromox-3.5/system/gromox-event.service
+--- gromox-3.5/system/gromox-event.service.omv~	2026-03-01 02:48:24.518216927 +0100
++++ gromox-3.5/system/gromox-event.service	2026-03-01 03:00:07.493374235 +0100
+@@ -1,12 +1,19 @@
+ [Unit]
+ Description=Gromox event service
+ Documentation=man:event(8gx)
++Requires=mariadb.service
++After=mariadb.service
+ 
+ [Service]
+ Type=simple
+ User=gromox
+ ExecStart=/usr/libexec/gromox/event
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
+diff -up gromox-3.5/system/gromox-http.service.omv~ gromox-3.5/system/gromox-http.service
+--- gromox-3.5/system/gromox-http.service.omv~	2026-03-01 02:47:10.950616262 +0100
++++ gromox-3.5/system/gromox-http.service	2026-03-01 03:00:19.648282038 +0100
+@@ -1,13 +1,21 @@
+ [Unit]
+ Description=Gromox HTTP service
+ Documentation=man:http(8gx)
+-After=mariadb.service mysql.service
++Requires=gromox-zcore.service gromox-midb.service
++After=mariadb.service mysql.service gromox-zcore.service gromox-midb.service
+ 
+ [Service]
+ Type=simple
+ ExecStart=/usr/libexec/gromox/http
+ ExecReload=/bin/kill -HUP $MAINPID
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++CapabilityBoundingSet=CAP_NET_BIND_SERVICE
++AmbientCapabilities=CAP_NET_BIND_SERVICE
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
+diff -up gromox-3.5/system/gromox-imap.service.omv~ gromox-3.5/system/gromox-imap.service
+--- gromox-3.5/system/gromox-imap.service.omv~	2026-03-01 03:00:19.653235702 +0100
++++ gromox-3.5/system/gromox-imap.service	2026-03-01 03:00:29.944419497 +0100
+@@ -8,6 +8,13 @@ Type=simple
+ ExecStart=/usr/libexec/gromox/imap
+ ExecReload=/bin/kill -HUP $MAINPID
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++CapabilityBoundingSet=CAP_NET_BIND_SERVICE
++AmbientCapabilities=CAP_NET_BIND_SERVICE
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
+diff -up gromox-3.5/system/gromox-istore.service.omv~ gromox-3.5/system/gromox-istore.service
+--- gromox-3.5/system/gromox-istore.service.omv~	2026-03-01 03:00:29.948996527 +0100
++++ gromox-3.5/system/gromox-istore.service	2026-03-01 03:00:37.262585016 +0100
+@@ -8,6 +8,11 @@ Type=simple
+ ExecStart=/usr/libexec/gromox/istore
+ ExecReload=/bin/kill -HUP $MAINPID
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
+diff -up gromox-3.5/system/gromox-midb.service.omv~ gromox-3.5/system/gromox-midb.service
+--- gromox-3.5/system/gromox-midb.service.omv~	2026-03-01 02:49:06.785458460 +0100
++++ gromox-3.5/system/gromox-midb.service	2026-03-01 03:00:46.748553477 +0100
+@@ -1,13 +1,19 @@
+ [Unit]
+ Description=Gromox midb service
+ Documentation=man:midb(8gx)
+-After=mariadb.service mysql.service
++Requires=mariadb.service gromox-event.service
++After=mariadb.service mysql.service gromox-event.service
+ 
+ [Service]
+ Type=simple
+ ExecStart=/usr/libexec/gromox/midb
+ ExecReload=/bin/kill -HUP $MAINPID
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
+diff -up gromox-3.5/system/gromox-pop3.service.omv~ gromox-3.5/system/gromox-pop3.service
+--- gromox-3.5/system/gromox-pop3.service.omv~	2026-03-01 03:00:46.753931335 +0100
++++ gromox-3.5/system/gromox-pop3.service	2026-03-01 03:00:55.750648128 +0100
+@@ -8,6 +8,13 @@ Type=simple
+ ExecStart=/usr/libexec/gromox/pop3
+ ExecReload=/bin/kill -HUP $MAINPID
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++CapabilityBoundingSet=CAP_NET_BIND_SERVICE
++AmbientCapabilities=CAP_NET_BIND_SERVICE
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
+diff -up gromox-3.5/system/gromox-snapshot.service.omv~ gromox-3.5/system/gromox-snapshot.service
+--- gromox-3.5/system/gromox-snapshot.service.omv~	2026-03-01 03:00:55.755234157 +0100
++++ gromox-3.5/system/gromox-snapshot.service	2026-03-01 03:01:14.195018668 +0100
+@@ -14,3 +14,7 @@ ProtectKernelModules=yes
+ ProtectControlGroups=yes
+ MemoryDenyWriteExecute=yes
+ SystemCallFilter=@default @file-system @basic-io @system-service
++User=gromox
++Group=gromox
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
+diff -up gromox-3.5/system/gromox-timer.service.omv~ gromox-3.5/system/gromox-timer.service
+--- gromox-3.5/system/gromox-timer.service.omv~	2026-03-01 02:48:46.158194111 +0100
++++ gromox-3.5/system/gromox-timer.service	2026-03-01 03:01:22.756934507 +0100
+@@ -1,12 +1,19 @@
+ [Unit]
+ Description=Gromox timer service
+ Documentation=man:timer(8gx)
++Requires=mariadb.service
++After=mariadb.service
+ 
+ [Service]
+ Type=simple
+ User=gromox
+ ExecStart=/usr/libexec/gromox/timer
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
+diff -up gromox-3.5/system/gromox-zcore.service.omv~ gromox-3.5/system/gromox-zcore.service
+--- gromox-3.5/system/gromox-zcore.service.omv~	2026-03-01 02:44:31.514830423 +0100
++++ gromox-3.5/system/gromox-zcore.service	2026-03-01 03:01:29.551028196 +0100
+@@ -1,13 +1,19 @@
+ [Unit]
+ Description=Gromox zcore service
+ Documentation=man:zcore(8gx)
+-After=mariadb.service mysql.service
++Requires=mariadb.service gromox-timer.service
++After=mariadb.service mysql.service gromox-timer.service
+ 
+ [Service]
+ Type=simple
+ ExecStart=/usr/libexec/gromox/zcore
+ ExecReload=/bin/kill -HUP $MAINPID
+ ProtectSystem=yes
++User=gromox
++Group=gromox
++RuntimeDirectory=gromox
++RuntimeDirectoryMode=0750
++Restart=on-failure
+ 
+ [Install]
+ WantedBy=multi-user.target
