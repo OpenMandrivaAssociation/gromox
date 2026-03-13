@@ -3,7 +3,7 @@
 
 Name:		gromox
 Version:	3.5
-Release:	3
+Release:	4
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
@@ -221,6 +221,8 @@ cat >%{buildroot}%{_sysconfdir}/logrotate.d/grommunio <<EOF
 }
 EOF
 
+mkdir -p %{buildroot}/srv/grommunio/web
+
 %files
 
 %files core
@@ -383,13 +385,12 @@ EOF
 %doc %{_mandir}/man4/php-mapi.4*
 %{_sysconfdir}/php-fpm-instances.d/grommunio.conf
 %{_sysconfdir}/php-fpm-instances.d/grommunio.env
-
+%{_tmpfilesdir}/grommunio.conf
+%config(noreplace) %verify(not md5 size mtime) %attr(0664,www,gromoxcf) %{_localstatedir}/log/php-fpm/grommunio.log
+%{_sysconfdir}/logrotate.d/grommunio
+%dir %attr(0755,grommunio,grommunio) /srv/grommunio
+%dir %attr(2775,grommunio,www) /srv/grommunio/web
 
 %files -n pam-gromox
 %{_libdir}/security/pam_gromox.so
 %doc %{_mandir}/man4/pam_gromox.4gx*
-%{_tmpfilesdir}/grommunio.conf
-%{_sysconfdir}/php-fpm-instances.d/grommunio.conf
-%{_sysconfdir}/php-fpm-instances.d/grommunio.env
-%config(noreplace) %verify(not md5 size mtime) %attr(0664,www,gromoxcf) %{_localstatedir}/log/php-fpm/grommunio.log
-%{_sysconfdir}/logrotate.d/grommunio
