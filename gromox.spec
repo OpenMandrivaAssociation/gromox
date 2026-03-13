@@ -3,7 +3,7 @@
 
 Name:		gromox
 Version:	3.5
-Release:	5
+Release:	6
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
@@ -223,6 +223,7 @@ cat >%{buildroot}%{_sysconfdir}/logrotate.d/grommunio <<EOF
 EOF
 
 mkdir -p %{buildroot}/srv/grommunio/web
+mkdir -p %{buildroot}/srv/mail/gromox/queue/{cache,mess,save,timer}
 
 %files
 
@@ -231,8 +232,14 @@ mkdir -p %{buildroot}/srv/grommunio/web
 %dir %{_datadir}/gromox
 %dir %{_libexecdir}/gromox
 %dir %{_libdir}/gromox
-%dir /srv/mail
-%dir /srv/mail/gromox
+%dir %attr(0755, root, root) /srv/mail
+%dir %attr(0755, gromox, gromox) /srv/mail/gromox
+%dir %attr(0770, gromox, gromox) /srv/mail/gromox/queue
+%dir %attr(0770, gromox, gromox) /srv/mail/gromox/queue/cache
+%dir %attr(0770, gromox, gromox) /srv/mail/gromox/queue/mess
+%dir %attr(0770, gromox, gromox) /srv/mail/gromox/queue/save
+%dir %attr(0770, gromox, gromox) /srv/mail/gromox/queue/timer
+
 # Metadata indexing
 %{_libexecdir}/gromox/midb
 %{_unitdir}/gromox-midb.service
