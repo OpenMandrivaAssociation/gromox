@@ -198,7 +198,7 @@ EOF
 
 cat >%{buildroot}%{_tmpfilesdir}/grommunio.conf <<'EOF'
 # Create the directories if they don't exist
-d /run/grommunio 0775 grommunio www
+d /run/grommunio 0755 grommunio www
 d /run/grommunio/web 0755 www www
 d /run/grommunio/web/session 0755 www www
 d /run/grommunio/web/tmp 0755 www www
@@ -207,7 +207,7 @@ d /run/grommunio/web/tmp/upload 0755 www www
 # And fix their permissions if they do -- apparently some
 # grommunio components create them owned by root, breaking
 # grommunio-web
-z /run/grommunio 0775 grommunio www
+z /run/grommunio 0755 grommunio www
 z /run/grommunio/web 0755 www www
 z /run/grommunio/web/session 0755 www www
 z /run/grommunio/web/tmp 0755 www www
