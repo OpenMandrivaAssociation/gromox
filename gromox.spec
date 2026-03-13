@@ -3,7 +3,7 @@
 
 Name:		gromox
 Version:	3.5
-Release:	2
+Release:	3
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
@@ -156,6 +156,69 @@ cat >%{buildroot}%{_sysconfdir}/php.d/mapi.ini <<'EOF'
 ; sure they disable opcache and JIT).
 ;extension=mapi.so
 ;mapi.zcore_socket=/run/gromox/zcore.sock
+EOF
+
+mkdir -p %{buildroot}%{_sysconfdir}/php-fpm-instances.d
+cat >%{buildroot}%{_sysconfdir}/php-fpm-instances.d/grommunio.conf <<'EOF'
+[global]
+error_log=syslog
+
+[grommunio]
+user=www
+group=www
+listen=/run/php-fpm/grommunio.sock
+listen.owner=www
+listen.group=www
+listen.mode=0660
+
+; Logging
+php_admin_value[error_log]=/var/log/php-fpm/grommunio.log
+php_admin_value[log_errors]=on
+
+; Performance tuning
+pm=dynamic
+pm.max_children=50
+pm.start_servers=1
+pm.min_spare_servers=1
+pm.max_spare_servers=35
+
+; MAPI/Gromox config
+env[GROMOX_CONFIG_DIR]=/etc/gromox
+php_admin_value[session.save_path]=/run/grommunio/web/session
+php_admin_value[sys_temp_dir]=/run/grommunio/web/tmp
+php_admin_value[upload_tmp_dir]=/run/grommunio/web/tmp/upload
+php_admin_value[open_basedir]=/usr/share/grommunio-web:/etc/grommunio-web:/srv/grommunio/web:/run/grommunio/web:/etc/gromox:/usr/share/php-mapi:/usr/share/php
+; MAPI does not like opcache and JIT
+php_admin_value[opcache.enable]=0
+php_admin_value[opcache.jit]=0
+php_admin_value[mapi.zcore_socket]=/run/gromox/zcore.sock
+EOF
+
+cat >%{buildroot}%{_tmpfilesdir}/grommunio.conf <<'EOF'
+d /run/grommunio 0775 grommunio www
+d /run/grommunio/web 0755 www www
+d /run/grommunio/web/session 0755 www www
+d /run/grommunio/web/tmp 0755 www www
+d /run/grommunio/web/tmp/upload 0755 www www
+EOF
+
+cat >%{buildroot}%{_sysconfdir}/php-fpm-instances.d/grommunio.env <<'EOF'
+PHP_FPM_ARGS="-d extension=mapi.so -d opcache.enable=0 -d opcache.jit=0 -d opcache.enable_cli=0"
+EOF
+
+mkdir -p %{buildroot}%{_localstatedir}/log/php-fpm
+touch %{buildroot}%{_localstatedir}/log/php-fpm/grommunio.log
+
+mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
+cat >%{buildroot}%{_sysconfdir}/logrotate.d/grommunio <<EOF
+%{_localstatedir}/log/php-fpm/grommunio.log {
+	missingok
+	notifempty
+	sharedscripts
+	postrotate
+		%{_bindir}/systemctl kill -s USR1 php-fpm@grommunio.service 2>/dev/null || true
+	endscript
+}
 EOF
 
 %files
@@ -318,7 +381,15 @@ EOF
 %{_sysconfdir}/php.d/mapi.ini
 %{_libdir}/php/extensions/mapi.so
 %doc %{_mandir}/man4/php-mapi.4*
+%{_sysconfdir}/php-fpm-instances.d/grommunio.conf
+%{_sysconfdir}/php-fpm-instances.d/grommunio.env
+
 
 %files -n pam-gromox
 %{_libdir}/security/pam_gromox.so
 %doc %{_mandir}/man4/pam_gromox.4gx*
+%{_tmpfilesdir}/grommunio.conf
+%{_sysconfdir}/php-fpm-instances.d/grommunio.conf
+%{_sysconfdir}/php-fpm-instances.d/grommunio.env
+%config(noreplace) %verify(not md5 size mtime) %attr(0664,www,gromoxcf) %{_localstatedir}/log/php-fpm/grommunio.log
+%{_sysconfdir}/logrotate.d/grommunio
