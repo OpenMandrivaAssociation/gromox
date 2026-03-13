@@ -1,0 +1,24 @@
+diff -up gromox-3.5/include/gromox/paths.h.in.omv~ gromox-3.5/include/gromox/paths.h.in
+--- gromox-3.5/include/gromox/paths.h.in.omv~	2026-03-13 19:12:39.001135502 +0100
++++ gromox-3.5/include/gromox/paths.h.in	2026-03-13 19:13:08.200694389 +0100
+@@ -11,7 +11,7 @@
+ #	define PKGSTATEDIR LOCALSTATEDIR "/db/gromox"
+ #	define PKGRUNDIR LOCALSTATEDIR "/run/gromox"
+ #else
+-#	define PKGSTATEDIR LOCALSTATEDIR "/lib/gromox"
++#	define PKGSTATEDIR "/srv/mail/gromox"
+ #	define PKGRUNDIR "/run/gromox"
+ #endif
+ #define FPMSOCKDIR "/run/php-fpm" /* varies even within Linux distros, so amply replace */
+diff -up gromox-3.5/include/gromox/paths.h.omv~ gromox-3.5/include/gromox/paths.h
+--- gromox-3.5/include/gromox/paths.h.omv~	2026-03-13 19:13:11.123526202 +0100
++++ gromox-3.5/include/gromox/paths.h	2026-03-13 19:13:26.324788043 +0100
+@@ -11,7 +11,7 @@
+ #	define PKGSTATEDIR LOCALSTATEDIR "/db/gromox"
+ #	define PKGRUNDIR LOCALSTATEDIR "/run/gromox"
+ #else
+-#	define PKGSTATEDIR LOCALSTATEDIR "/lib/gromox"
++#	define PKGSTATEDIR "/srv/mail/gromox"
+ #	define PKGRUNDIR "/run/gromox"
+ #endif
+ #define FPMSOCKDIR "/run/php-fpm" /* varies even within Linux distros, so amply replace */
