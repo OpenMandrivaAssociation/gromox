@@ -3,7 +3,7 @@
 
 Name:		gromox
 Version:	3.5
-Release:	6
+Release:	7
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
@@ -186,6 +186,7 @@ pm.max_spare_servers=35
 ; MAPI/Gromox config
 env[GROMOX_CONFIG_DIR]=/etc/gromox
 php_admin_value[session.save_path]=/run/grommunio/web/session
+php_admin_value[session.cookie_secure]=On
 php_admin_value[sys_temp_dir]=/run/grommunio/web/tmp
 php_admin_value[upload_tmp_dir]=/run/grommunio/web/tmp/upload
 php_admin_value[open_basedir]=/usr/share/grommunio-web:/etc/grommunio-web:/srv/grommunio/web:/run/grommunio/web:/etc/gromox:/usr/share/php-mapi:/usr/share/php
@@ -196,11 +197,21 @@ php_admin_value[mapi.zcore_socket]=/run/gromox/zcore.sock
 EOF
 
 cat >%{buildroot}%{_tmpfilesdir}/grommunio.conf <<'EOF'
+# Create the directories if they don't exist
 d /run/grommunio 0775 grommunio www
 d /run/grommunio/web 0755 www www
 d /run/grommunio/web/session 0755 www www
 d /run/grommunio/web/tmp 0755 www www
 d /run/grommunio/web/tmp/upload 0755 www www
+
+# And fix their permissions if they do -- apparently some
+# grommunio components create them owned by root, breaking
+# grommunio-web
+z /run/grommunio 0775 grommunio www
+z /run/grommunio/web 0755 www www
+z /run/grommunio/web/session 0755 www www
+z /run/grommunio/web/tmp 0755 www www
+z /run/grommunio/web/tmp/upload 0755 www www
 EOF
 
 cat >%{buildroot}%{_sysconfdir}/php-fpm-instances.d/grommunio.env <<'EOF'
