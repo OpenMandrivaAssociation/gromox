@@ -2,8 +2,8 @@
 %define _disable_ld_no_undefined 1
 
 Name:		gromox
-Version:	3.5
-Release:	8
+Version:	3.7
+Release:	1
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
@@ -362,6 +362,7 @@ mkdir -p %{buildroot}/srv/mail/gromox/queue/{cache,mess,save,timer}
 %{_datadir}/gromox/Services.wsdl
 %{_datadir}/gromox/Types.xsd
 %doc %{_mandir}/man4/ews.4gx*
+%doc %{_mandir}/man4/oab.4gx*
 %doc %{_mandir}/man4/exchange_*.4gx*
 %doc %{_mandir}/man4/mod_*.4gx*
 
@@ -387,7 +388,6 @@ mkdir -p %{buildroot}/srv/mail/gromox/queue/{cache,mess,save,timer}
 %{_libexecdir}/gromox/kdb-uidextract-limited
 %{_libexecdir}/gromox/textmapquery
 %doc %{_mandir}/man1/ddbg.1gx*
-%doc %{_mandir}/man8/cgkrepair.8gx*
 %doc %{_mandir}/man8/gromox-*.8*
 %doc %{_mandir}/man8/kdb-uidextract.8*
 %doc %{_mandir}/man8/kdb-uidextract-limited.8*
