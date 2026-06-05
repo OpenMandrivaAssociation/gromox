@@ -3,7 +3,7 @@
 
 Name:		gromox
 Version:	3.7
-Release:	1
+Release:	2
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
