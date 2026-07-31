@@ -2,8 +2,8 @@
 %define _disable_ld_no_undefined 1
 
 Name:		gromox
-Version:	3.7
-Release:	2
+Version:	3.8
+Release:	1
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
@@ -43,7 +43,7 @@ Requires:	pam-gromox = %{EVRD}
 Requires:	locales-extra-charsets
 
 %patchlist
-gromox-3.5-servicedeps.patch
+# dropped (no longer applies): gromox-3.5-servicedeps.patch
 gromox-3.5-fhs.patch
 
 %description
