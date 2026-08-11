@@ -2,7 +2,7 @@
 %define _disable_ld_no_undefined 1
 
 Name:		gromox
-Version:	3.8
+Version:	3.9
 Release:	1
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
@@ -381,6 +381,7 @@ mkdir -p %{buildroot}/srv/mail/gromox/queue/{cache,mess,save,timer}
 %{_libexecdir}/gromox/authtry
 # Database debugger
 %{_libexecdir}/gromox/ddbg
+%{_libexecdir}/gromox/shmget
 %{_libexecdir}/gromox/gromox-snapshot
 %{_unitdir}/gromox-snapshot.service
 %{_unitdir}/gromox-snapshot.timer
