@@ -127,6 +127,8 @@ sed -i -e 's,^pamlibdir =.*,pamlibdir = %{_libdir}/security,' Makefile.am
 ./qconf --help
 
 %conf
+# fmt 12 no longer pulls format() in via fmt/core.h
+export CXXFLAGS="${CXXFLAGS:-%{optflags}} -DFMT_DEPRECATED_HEAVY_CORE"
 # The libraries are strictly internal - they're
 # not meant to be used by anything but gromox
 # (and can't be, because the corresponding headers
