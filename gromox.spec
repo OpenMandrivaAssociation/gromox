@@ -2,8 +2,8 @@
 %define _disable_ld_no_undefined 1
 
 Name:		gromox
-Version:	3.9
-Release:	3
+Version:	3.12
+Release:	1
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
 URL:		https://github.com/grommunio/gromox
@@ -23,6 +23,9 @@ BuildRequires:	pkgconfig(libcurl)
 BuildRequires:	pkgconfig(ldap)
 BuildRequires:	pkgconfig(mariadb)
 BuildRequires:	pkgconfig(libxxhash)
+BuildRequires:	pkgconfig(krb5-gssapi)
+BuildRequires:	pkgconfig(libxml-2.0)
+BuildRequires:	pkgconfig(zlib)
 # Optional dependencies for better M$ Exchange emulation support
 # ESE = Extensible Storage Engine = Database format for Windows Search, Windows Mail, Exchange, Active Directory
 # OLECF = OLE 2 Compound File (some M$ Office files, thumbs.db)
@@ -184,6 +187,10 @@ pm.max_children=50
 pm.start_servers=1
 pm.min_spare_servers=1
 pm.max_spare_servers=35
+php_admin_value[memory_limit]=512M
+php_admin_value[post_max_size]=50M
+php_admin_value[upload_max_filesize]=50M
+php_admin_value[max_execution_time]=3660
 
 ; MAPI/Gromox config
 env[GROMOX_CONFIG_DIR]=/etc/gromox
@@ -280,6 +287,7 @@ mkdir -p %{buildroot}/srv/mail/gromox/queue/{cache,mess,save,timer}
 %{_datadir}/gromox/gromox.ldif
 # SQLite tweaks
 %{_datadir}/gromox/sqliterc
+%{_datadir}/gromox/logrotate-gromox.conf.sample
 # Core libraries
 %{_libdir}/gromox/libgxs_mysql_adaptor.so*
 %{_libdir}/gromox/libgxs_ruleproc.so*
@@ -389,7 +397,6 @@ mkdir -p %{buildroot}/srv/mail/gromox/queue/{cache,mess,save,timer}
 %{_unitdir}/gromox-snapshot.timer
 %{_libexecdir}/gromox/kdb-uidextract
 %{_libexecdir}/gromox/kdb-uidextract-limited
-%{_libexecdir}/gromox/textmapquery
 %doc %{_mandir}/man1/ddbg.1gx*
 %doc %{_mandir}/man8/gromox-*.8*
 %doc %{_mandir}/man8/kdb-uidextract.8*
