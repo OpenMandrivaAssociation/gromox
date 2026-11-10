@@ -2,7 +2,7 @@
 %define _disable_ld_no_undefined 1
 
 Name:		gromox
-Version:	3.12
+Version:	3.13
 Release:	1
 Source0:	https://github.com/grommunio/gromox/releases/download/gromox-%{version}/gromox-%{version}.tar.zst
 Summary:	Groupware server backend for grommunio
@@ -206,21 +206,20 @@ php_admin_value[mapi.zcore_socket]=/run/gromox/zcore.sock
 EOF
 
 cat >%{buildroot}%{_tmpfilesdir}/grommunio.conf <<'EOF'
-# Create the directories if they don't exist
-d /run/grommunio 0755 grommunio www
+# /run/grommunio MUST be root-owned. systemd-tmpfiles refuses to walk from a
+# directory owned by one non-root user into a child owned by another ("Detected
+# unsafe path transition /run/grommunio (owned by grommunio) -> /run/grommunio/web
+# (owned by www)"), so with a grommunio-owned parent everything below web/ was
+# created root-owned or not at all -- which is the "some grommunio components
+# create them owned by root" the previous z lines were working around, and the
+# z lines hit the same refusal. Group www, 0775: grommunio-admin-api runs with
+# Group=www, and its socket is created by systemd as root.
+# Keep this line IDENTICAL in grommunio-admin-api's tmpfiles file.
+d /run/grommunio 0775 root www
 d /run/grommunio/web 0755 www www
-d /run/grommunio/web/session 0755 www www
+d /run/grommunio/web/session 0700 www www
 d /run/grommunio/web/tmp 0755 www www
 d /run/grommunio/web/tmp/upload 0755 www www
-
-# And fix their permissions if they do -- apparently some
-# grommunio components create them owned by root, breaking
-# grommunio-web
-z /run/grommunio 0755 grommunio www
-z /run/grommunio/web 0755 www www
-z /run/grommunio/web/session 0755 www www
-z /run/grommunio/web/tmp 0755 www www
-z /run/grommunio/web/tmp/upload 0755 www www
 EOF
 
 cat >%{buildroot}%{_sysconfdir}/php-fpm-instances.d/grommunio.env <<'EOF'
